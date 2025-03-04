@@ -39,7 +39,7 @@ def DisplayFighterMatchup(eventTitle ,fighter1info, fighter2info):
     ---------------------------------
     {fighters[0]} vs {fighters[1]}
     ---------------------------------
-    Weight: {df.loc[fighters[0], "Weight (lbs)"]} lbs 
+    Weight: {df.loc[fighters[0], "Weight (lbs)"]} 
     Record: {df.loc[fighters[0], "Record"]} vs {df.loc[fighters[1], "Record"]}
     Height: {df.loc[fighters[0], "Height (ft)"]} vs {df.loc[fighters[1], "Height (ft)"]} 
     Reach: {df.loc[fighters[0], "Reach (in)"]} vs {df.loc[fighters[1], "Reach (in)"]} 
