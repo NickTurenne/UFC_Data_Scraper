@@ -32,9 +32,9 @@ def DisplayFighterMatchup(eventTitle ,fighter1info, fighter2info):
     fig = plt.figure(figsize=(12, 8))
     gs = gridspec.GridSpec(3, 4, height_ratios=[1, 2, 2])  # First row for text, next two for graphs
 
-    ax_text = fig.add_subplot(gs[0, :])  # Use all 4 columns for fighter info
-    ax_text.axis("off")  # Hide axes
-    fighter_info = f"""
+    axText = fig.add_subplot(gs[0, :])  # Use all 4 columns for fighter info
+    axText.axis("off")  # Hide axes
+    fighterInfo = f"""
     {eventTitle}
     ---------------------------------
     {fighters[0]} vs {fighters[1]}
@@ -47,7 +47,7 @@ def DisplayFighterMatchup(eventTitle ,fighter1info, fighter2info):
     DOB: {df.loc[fighters[0], "DOB"]} vs {df.loc[fighters[1], "DOB"]}
     """
 
-    ax_text.text(0.5, 0.5, fighter_info, fontsize=12, ha="center", va="center", fontfamily="monospace")
+    axText.text(0.5, 0.5, fighterInfo, fontsize=12, ha="center", va="center", fontfamily="monospace")
 
     stats_to_compare = [
     "SLpM", "Strk Acc", "SApM", "Strk Def", 
