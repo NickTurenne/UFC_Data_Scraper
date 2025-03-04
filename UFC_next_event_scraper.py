@@ -1,5 +1,5 @@
 import requests as rq
-# import sqlite3 as sql
+import json
 from bs4 import BeautifulSoup as bs
 
 # DESC: Retrieve fight info from a matchup from ufcstats.com
@@ -25,25 +25,37 @@ def GetFighterStats(link:str):
         infoFighter2.append(subRows[2].text.strip())
     return [infoFighter1, infoFighter2]
 
-# 1. Get the link to most recent event from ufcstats.com
-r = rq.get('http://ufcstats.com/statistics/events/upcoming')
-soup = bs(r.text, 'html.parser')
-rows = soup.find('table', {'class' : 'b-statistics__table-events'}).find('tbody').find_all('tr')
-top = rows[1]
-link = top.find('td').find('a').get('href')
+# DESC: Retrieve list of all fight info for main matchups in upcoming UFC events from ufcstats.com
+# Preconditions: internet connection
+# Postconditions: an array contiaining the fight title, and then all matchup fighter details
+def GetEventMatchupDetails():
+    # 1. Get the link to most recent event from ufcstats.com
+    r = rq.get('http://ufcstats.com/statistics/events/upcoming')
+    soup = bs(r.text, 'html.parser')
+    rows = soup.find('table', {'class' : 'b-statistics__table-events'}).find('tbody').find_all('tr')
+    top = rows[1]
+    link = top.find('td').find('a').get('href')
 
-# 2. Get the fighter matchup links from the main event (will probably want this to be for all fights)
-r = rq.get(link)
-soup = bs(r.text, 'html.parser')
-rows = soup.find('table', {'class' : 'b-fight-details__table b-fight-details__table_style_margin-top b-fight-details__table_type_event-details js-fight-table'}).find('tbody').find_all('td')
-matchup = rows[4]
-link = matchup.find('a').get('data-link')
+    # 2. Get the fighter matchup links from the main event (will probably want this to be for all fights)
+    r = rq.get(link)
+    soup = bs(r.text, 'html.parser')
+    title = soup.find('span', {'class' : 'b-content__title-highlight'}).text.strip()
+    rowsTest = soup.find('table', {'class' : 'b-fight-details__table b-fight-details__table_style_margin-top b-fight-details__table_type_event-details js-fight-table'}).find('tbody').find_all('tr')
+    matchupLinks = []
+    for row in rowsTest:
+        subRows = row.find_all('td')
+        matchupLinks.append(subRows[4].find('a').get('data-link'))
 
-# 3. Extract the fighter information (this will probably be put into a function)
+    eventInfo = [title]
+    for link in matchupLinks:
+        eventInfo.append(GetFighterStats(link))
 
-info = GetFighterStats(link)
-print(info[0])
-print(info[1])
+    return eventInfo
 
+def main():
+    info = GetEventMatchupDetails()
+    with open("eventInfo.json", "w") as file:
+        json.dump(info, file)
 
-
+if __name__ == "__main__":
+    main()
